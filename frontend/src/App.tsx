@@ -35,6 +35,8 @@ import {
   MOCK_LOJISTAS,
   type Lojista,
 } from "./services/api";
+import { OriginInput, OriginSelect } from "./components/ui/OriginControls";
+import { OriginBanner } from "./components/ui/OriginBanner";
 
 const LOJAS_DISPONIVEIS = [
   "Artigos Masculinos",
@@ -239,54 +241,39 @@ function PainelGestor() {
                   1. Definir Objetivo Comercial
                 </h2>
 
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">
-                    Finalidade da Ação
-                  </label>
-                  <select
-                    value={objetivo}
-                    onChange={(e) => setObjetivo(e.target.value)}
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option>
-                      Reativar vendas de Moda Masculina (Pós-Dia dos Pais)
-                    </option>
-                    <option>Aumentar fluxo na Praça de Alimentação</option>
-                    <option>Atrair famílias no domingo à tarde</option>
-                    <option>Movimentar corredor do Piso L2</option>
-                  </select>
-                </div>
+                <OriginSelect
+                  label="Finalidade da Ação"
+                  value={objetivo}
+                  onChange={(e) => setObjetivo(e.target.value)}
+                >
+                  <option>
+                    Reativar vendas de Moda Masculina (Pós-Dia dos Pais)
+                  </option>
+                  <option>Aumentar fluxo na Praça de Alimentação</option>
+                  <option>Atrair famílias no domingo à tarde</option>
+                  <option>Movimentar corredor do Piso L2</option>
+                </OriginSelect>
+
+                <OriginSelect
+                  label="Público-Alvo Desejado"
+                  value={publicoAlvo}
+                  onChange={(e) => setPublicoAlvo(e.target.value)}
+                >
+                  <option>Homens Adultos • 30 a 60 anos</option>
+                  <option>Famílias com Crianças • 25 a 45 anos</option>
+                  <option>Jovens Universitários • 18 a 25 anos</option>
+                  <option>Público Sênior • 60+ anos</option>
+                </OriginSelect>
+
+                <OriginInput
+                  label="Período Desejado"
+                  icon={<Calendar className="w-4 h-4" />}
+                  value={periodo}
+                  onChange={(e) => setPeriodo(e.target.value)}
+                />
 
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">
-                    Público-Alvo Desejado
-                  </label>
-                  <select
-                    value={publicoAlvo}
-                    onChange={(e) => setPublicoAlvo(e.target.value)}
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                  >
-                    <option>Homens Adultos • 30 a 60 anos</option>
-                    <option>Famílias com Crianças • 25 a 45 anos</option>
-                    <option>Jovens Universitários • 18 a 25 anos</option>
-                    <option>Público Sênior • 60+ anos</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-1.5">
-                    Período Desejado
-                  </label>
-                  <input
-                    type="text"
-                    value={periodo}
-                    onChange={(e) => setPeriodo(e.target.value)}
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-gray-500 mb-2">
+                  <label className="block text-xs font-medium text-foreground mb-2">
                     Lojas / Segmentos Patrocinadores
                   </label>
                   <div className="flex flex-wrap gap-2">
@@ -366,14 +353,18 @@ function PainelGestor() {
                       </div>
 
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div className="p-3 rounded-lg bg-muted border border-border flex items-start gap-2.5 text-xs">
-                          <Calendar className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                          <span>{resultado.contexto.calendario}</span>
-                        </div>
-                        <div className="p-3 rounded-lg bg-muted border border-border flex items-start gap-2.5 text-xs">
-                          <CloudSun className="w-4 h-4 text-secondary shrink-0 mt-0.5" />
-                          <span>{resultado.contexto.clima}</span>
-                        </div>
+                        <OriginBanner
+                          variante="laranja"
+                          icone={<Calendar className="w-4 h-4" />}
+                          titulo="Contexto Sazonal (BrasilAPI)"
+                          descricao={resultado.contexto.calendario}
+                        />
+                        <OriginBanner
+                          variante="petroleo"
+                          icone={<CloudSun className="w-4 h-4" />}
+                          titulo="Previsão Climática (Open-Meteo)"
+                          descricao={resultado.contexto.clima}
+                        />
                       </div>
 
                       <div className="border-t border-border pt-4 space-y-2.5 text-sm">
@@ -451,7 +442,6 @@ function PainelGestor() {
               </p>
             </header>
 
-            {/* 4 KPIs */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div className="bg-background p-5 rounded-xl border border-border shadow-sm">
                 <p className="text-xs font-medium text-gray-500">
@@ -500,7 +490,6 @@ function PainelGestor() {
               </div>
             </div>
 
-            {/* Gráfico + Insights APIs */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
               <div className="lg:col-span-8 bg-background p-6 rounded-xl border border-border shadow-sm">
                 <h2 className="font-semibold text-base mb-4">
@@ -538,25 +527,18 @@ function PainelGestor() {
                     Insights de Sazonalidade (APIs)
                   </h2>
                   <div className="space-y-3">
-                    <div className="p-3.5 rounded-lg bg-muted border border-border">
-                      <span className="text-[11px] font-bold uppercase text-primary">
-                        BrasilAPI • Calendário
-                      </span>
-                      <p className="text-xs text-gray-700 mt-1">
-                        Períodos pós-datas comemorativas (Dia dos Pais / Mães)
-                        apresentam queda média de 24%, recuperada com eventos
-                        segmentados.
-                      </p>
-                    </div>
-                    <div className="p-3.5 rounded-lg bg-muted border border-border">
-                      <span className="text-[11px] font-bold uppercase text-secondary">
-                        Open-Meteo • Clima
-                      </span>
-                      <p className="text-xs text-gray-700 mt-1">
-                        Sábados com chuva acima de 60% elevam em 40 min a
-                        permanência em eventos Indoor na Praça de Alimentação.
-                      </p>
-                    </div>
+                    <OriginBanner
+                      variante="laranja"
+                      icone={<Calendar className="w-4 h-4" />}
+                      titulo="BrasilAPI • Calendário"
+                      descricao="Períodos pós-datas comemorativas apresentam queda média de 24%, recuperada com eventos segmentados."
+                    />
+                    <OriginBanner
+                      variante="petroleo"
+                      icone={<CloudSun className="w-4 h-4" />}
+                      titulo="Open-Meteo • Clima"
+                      descricao="Sábados com chuva acima de 60% elevam em 40 min a permanência em eventos Indoor na Praça de Alimentação."
+                    />
                   </div>
                 </div>
 
@@ -566,7 +548,6 @@ function PainelGestor() {
               </div>
             </div>
 
-            {/* Tabela Histórica */}
             <div className="bg-background rounded-xl border border-border shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-border flex items-center justify-between">
                 <h2 className="font-semibold text-base">
@@ -647,7 +628,6 @@ function PainelGestor() {
             </header>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-              {/* Cadastro rápido */}
               <form
                 onSubmit={handleAdicionarLoja}
                 className="lg:col-span-4 bg-background p-6 rounded-xl border border-border shadow-sm space-y-4 h-fit"
@@ -655,44 +635,27 @@ function PainelGestor() {
                 <h2 className="font-semibold text-base border-b border-border pb-3">
                   Cadastrar Novo Lojista
                 </h2>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-                    Nome da Loja
-                  </label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="Ex: Burger Artesanal L2"
-                    value={novaLojaNome}
-                    onChange={(e) => setNovaLojaNome(e.target.value)}
-                    className="w-full rounded-lg border border-border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-                    Segmento
-                  </label>
-                  <select
-                    value={novaLojaSegmento}
-                    onChange={(e) => setNovaLojaSegmento(e.target.value)}
-                    className="w-full rounded-lg border border-border px-3 py-2 text-sm bg-background"
-                  >
-                    {LOJAS_DISPONIVEIS.map((s) => (
-                      <option key={s}>{s}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="block text-xs font-semibold text-gray-500 uppercase mb-1">
-                    Localização / Piso
-                  </label>
-                  <input
-                    type="text"
-                    value={novaLojaPiso}
-                    onChange={(e) => setNovaLojaPiso(e.target.value)}
-                    className="w-full rounded-lg border border-border px-3 py-2 text-sm"
-                  />
-                </div>
+                <OriginInput
+                  label="Nome da Loja"
+                  required
+                  placeholder="Ex: Burger Artesanal L2"
+                  value={novaLojaNome}
+                  onChange={(e) => setNovaLojaNome(e.target.value)}
+                />
+                <OriginSelect
+                  label="Segmento"
+                  value={novaLojaSegmento}
+                  onChange={(e) => setNovaLojaSegmento(e.target.value)}
+                >
+                  {LOJAS_DISPONIVEIS.map((s) => (
+                    <option key={s}>{s}</option>
+                  ))}
+                </OriginSelect>
+                <OriginInput
+                  label="Localização / Piso"
+                  value={novaLojaPiso}
+                  onChange={(e) => setNovaLojaPiso(e.target.value)}
+                />
                 <button
                   type="submit"
                   className="w-full bg-primary text-white font-semibold py-2.5 px-4 rounded-lg text-sm flex items-center justify-center gap-2 hover:opacity-95"
@@ -702,7 +665,6 @@ function PainelGestor() {
                 </button>
               </form>
 
-              {/* Lista de Lojas */}
               <div className="lg:col-span-8 space-y-4">
                 <div className="relative">
                   <Search className="w-4 h-4 text-gray-400 absolute left-3.5 top-3" />
