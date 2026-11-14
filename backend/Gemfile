@@ -1,0 +1,37 @@
+# frozen_string_literal: true
+
+source 'https://rubygems.org'
+
+ruby '>= 3.3'
+
+gem 'grape'
+gem 'grape-entity'
+gem 'grape-swagger'
+gem 'grape-swagger-entity'
+gem 'jwt'
+gem 'pg'
+gem 'puma'
+gem 'rack'
+gem 'rack-attack'
+gem 'rack-cors'
+gem 'rackup'
+gem 'sequel'
+gem 'zeitwerk'
+
+group :development, :test do
+  gem 'dotenv'
+  gem 'rake'
+end
+
+group :development do
+  gem 'rubocop', require: false
+  gem 'rubocop-rake', require: false
+  gem 'rubocop-rspec', require: false
+end
+
+group :test do
+  gem 'rack-test'
+  gem 'rspec'
+  gem 'simplecov', require: false
+  gem 'simplecov-lcov', require: false
+end
