@@ -1,3 +1,74 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    text-size-adjust: 100%;
+  }
+
+  /* Tracking por tamanho: títulos grandes pedem letter-spacing negativo, corpo fica em 0. */
+  h1 {
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+  h2,
+  h3 {
+    letter-spacing: -0.01em;
+  }
+
+  /* Feedback no toque (pointer-down), não no clique. */
+  button:not(:disabled),
+  a[href] {
+    transition-property: transform, background-color, color, border-color, box-shadow, opacity;
+    transition-duration: 120ms;
+    transition-timing-function: ease-out;
+  }
+  button:not(:disabled):active,
+  a[href]:active {
+    transform: scale(0.97);
+  }
+
+  :focus-visible {
+    outline: 2px solid theme("colors.primary");
+    outline-offset: 2px;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@layer utilities {
+  /* Material translúcido para barras flutuantes: o conteúdo rola por baixo. */
+  .material {
+    background-color: rgb(255 255 255 / 0.72);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    backdrop-filter: blur(20px) saturate(180%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  button:not(:disabled):active,
+  a[href]:active {
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .material {
+    background-color: rgb(255 255 255);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}

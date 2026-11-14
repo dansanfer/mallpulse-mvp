@@ -71,7 +71,7 @@ export function CheckinPage() {
   };
 
   return (
-    <div className="min-h-screen bg-muted flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-muted flex flex-col items-center justify-center px-4 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
       {/* Moldura Mobile (390px) */}
       <div className="w-full max-w-[390px] bg-background rounded-3xl border border-border shadow-lg overflow-hidden">
         {/* Topo Minimalista */}
@@ -97,7 +97,7 @@ export function CheckinPage() {
                 <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/20 text-[11px] font-medium mb-2">
                   {evento.dados.categoria} • {formatarInicio(evento.dados.inicio)}
                 </span>
-                <h1 className="text-xl font-bold leading-snug">{evento.dados.titulo}</h1>
+                <h1 className="text-xl font-bold leading-snug tracking-tight">{evento.dados.titulo}</h1>
                 <p className="text-xs text-white/90 flex items-center gap-1 mt-1.5">
                   <MapPin className="w-3.5 h-3.5" />
                   {evento.dados.local} • Entrada Gratuita
@@ -124,7 +124,7 @@ export function CheckinPage() {
                 </span>
               ) : (
                 <>
-                  <span className="text-sm flex items-center gap-1.5">
+                  <span className="text-base flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4" />
                     Confirmar Minha Presença
                   </span>
@@ -135,7 +135,7 @@ export function CheckinPage() {
               )}
             </button>
           ) : (
-            <div className="p-4 rounded-2xl bg-secondary/10 border border-secondary text-center space-y-1">
+            <div role="status" className="p-4 rounded-2xl bg-secondary/10 border border-secondary text-center space-y-1">
               <div className="flex items-center justify-center gap-1.5 text-secondary font-bold text-sm">
                 <CheckCircle2 className="w-5 h-5" />
                 {resposta.status === "confirmado"
@@ -158,7 +158,7 @@ export function CheckinPage() {
               <Sparkles className="w-3.5 h-3.5 text-primary" />
               O que você mais curte ver por aqui?
             </p>
-            <div className="flex flex-wrap gap-1.5">
+            <div className="flex flex-wrap gap-2">
               {EXPERIENCIAS.map((exp) => {
                 const ativo = interesses.includes(exp);
                 return (
@@ -167,7 +167,7 @@ export function CheckinPage() {
                     key={exp}
                     aria-pressed={ativo}
                     onClick={() => toggleInteresse(exp)}
-                    className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${
+                    className={`h-11 px-3.5 rounded-full text-sm font-medium transition ${
                       ativo
                         ? "bg-secondary text-white"
                         : "bg-muted text-gray-600 hover:bg-gray-200"
@@ -187,12 +187,12 @@ export function CheckinPage() {
                 <CalendarDays className="w-3.5 h-3.5 text-secondary" />
                 Próximos Eventos no Shopping
               </p>
-              <span className="text-[11px] text-gray-400">Agenda</span>
+              <span className="text-[11px] text-gray-500">Agenda</span>
             </div>
 
             <div className="space-y-2">
               {proximosEventos.length === 0 && !agenda.carregando && (
-                <p className="text-[11px] text-gray-400">Nenhum outro evento agendado.</p>
+                <p className="text-[11px] text-gray-500">Nenhum outro evento agendado.</p>
               )}
               {proximosEventos.map((ev) => (
                 <div
@@ -201,7 +201,7 @@ export function CheckinPage() {
                 >
                   <div>
                     <span
-                      className="inline-block px-2 py-0.5 rounded-md text-[10px] font-semibold mb-1 bg-primary/15 text-primary"
+                      className="inline-block px-2 py-0.5 rounded-md text-[11px] font-semibold mb-1 bg-primary/15 text-primary"
                     >
                       {ev.categoria}
                     </span>
@@ -220,7 +220,7 @@ export function CheckinPage() {
             </div>
           </div>
 
-          <p className="text-[11px] text-center text-gray-400 pt-1">
+          <p className="text-[11px] text-center text-gray-500 pt-1">
             MallPulse • Experiência Inteligente no Shopping
           </p>
         </div>

@@ -64,7 +64,7 @@ export function DecisaoTab() {
   return (
     <>
       <header className="mb-8">
-        <h1 className="text-2xl font-bold text-foreground">Motor de Decisão Comercial</h1>
+        <h1 className="text-xl md:text-2xl font-bold text-foreground">Motor de Decisão Comercial</h1>
         <p className="text-sm text-gray-500 mt-1">
           Defina a finalidade comercial e o público desejado para gerar a recomendação ideal de
           evento.
@@ -152,7 +152,8 @@ export function DecisaoTab() {
                   type="button"
                   key={loja.id}
                   onClick={() => toggleLojista(loja.id)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium border transition ${
+                  aria-pressed={lojistaIds.includes(loja.id)}
+                  className={`inline-flex items-center min-h-[44px] md:min-h-0 px-3 py-1.5 rounded-full text-xs font-medium border transition ${
                     lojistaIds.includes(loja.id)
                       ? "bg-secondary text-white border-secondary"
                       : "bg-muted text-gray-600 border-border hover:border-gray-400"

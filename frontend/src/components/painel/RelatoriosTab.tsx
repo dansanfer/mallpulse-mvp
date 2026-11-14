@@ -10,9 +10,9 @@ export function RelatoriosTab() {
 
   return (
     <div className="space-y-6">
-      <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">Relatórios Executivos & Auditoria</h1>
+      <header className="flex flex-wrap items-center justify-between gap-4">
+        <div className="min-w-0">
+          <h1 className="text-xl md:text-2xl font-bold tracking-tight text-foreground">Relatórios Executivos & Auditoria</h1>
           <p className="text-sm text-gray-500 mt-1">
             Exportação de indicadores consolidados e rastreabilidade das recomendações geradas.
           </p>
@@ -20,9 +20,9 @@ export function RelatoriosTab() {
         <button
           onClick={() => historico.dados && exportarHistoricoCSV(historico.dados)}
           disabled={!historico.dados}
-          className="bg-secondary hover:opacity-95 disabled:opacity-60 text-white font-semibold px-4 py-2.5 rounded-lg text-sm flex items-center gap-2 shadow-sm w-fit"
+          className="bg-secondary hover:opacity-95 disabled:opacity-60 text-white font-semibold px-4 min-h-11 rounded-lg text-sm flex items-center gap-2 shadow-sm w-fit shrink-0 whitespace-nowrap"
         >
-          <Download className="w-4 h-4" />
+          <Download className="w-4 h-4 shrink-0" />
           Exportar Base Completa (CSV)
         </button>
       </header>

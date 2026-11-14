@@ -3,8 +3,8 @@ import { Navigate } from "react-router-dom";
 import { AlertTriangle, Loader2, LogIn } from "lucide-react";
 import { supabase } from "../lib/supabase";
 import { useSessao } from "../hooks/useSessao";
-import { OriginInput } from "../components/ui/OriginControls";
 import { OriginBanner } from "../components/ui/OriginBanner";
+import { OriginInput } from "../components/ui/OriginControls";
 
 export function LoginPage() {
   const { sessao } = useSessao();
@@ -37,7 +37,7 @@ export function LoginPage() {
           </div>
           <span className="text-xl font-bold tracking-tight">MallPulse</span>
         </div>
-        <h1 className="font-semibold text-base border-b border-border pb-3">
+        <h1 className="font-semibold text-2xl tracking-tight border-b border-border pb-3">
           Acesso do Gestor
         </h1>
 
@@ -50,12 +50,14 @@ export function LoginPage() {
           />
         )}
         {erro && (
-          <OriginBanner
-            variante="laranja"
-            icone={<AlertTriangle className="w-4 h-4" />}
-            titulo="Falha no login"
-            descricao={erro}
-          />
+          <div role="alert">
+            <OriginBanner
+              variante="laranja"
+              icone={<AlertTriangle className="w-4 h-4" />}
+              titulo="Falha no login"
+              descricao={erro}
+            />
+          </div>
         )}
 
         <OriginInput
@@ -63,6 +65,8 @@ export function LoginPage() {
           type="email"
           required
           autoComplete="email"
+          autoCapitalize="none"
+          spellCheck={false}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
@@ -78,7 +82,7 @@ export function LoginPage() {
         <button
           type="submit"
           disabled={!supabase || enviando}
-          className="w-full bg-primary hover:opacity-95 disabled:opacity-60 text-white font-semibold py-3 px-4 rounded-lg text-sm flex items-center justify-center gap-2 transition shadow-sm"
+          className="w-full bg-primary hover:opacity-95 disabled:opacity-60 text-white font-semibold h-12 px-4 rounded-lg text-sm flex items-center justify-center gap-2 transition shadow-sm"
         >
           {enviando ? <Loader2 className="w-4 h-4 animate-spin" /> : <LogIn className="w-4 h-4" />}
           Entrar
