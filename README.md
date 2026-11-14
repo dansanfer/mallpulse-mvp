@@ -97,6 +97,19 @@ Frontend (`frontend/.env`):
 | `VITE_SUPABASE_URL` | URL do projeto Supabase. |
 | `VITE_SUPABASE_ANON_KEY` | Chave pública (anon) do Supabase. |
 
+## Deploy (Railway)
+
+Dois serviços no mesmo projeto Railway, ambos conectados a este repositório (GitHub), cada um com **Root Directory** próprio. O build usa o `Dockerfile` e o `railway.json` de cada pasta.
+
+| Serviço | Root Directory | Variáveis |
+|---|---|---|
+| `api` | `backend` | `DATABASE_URL` (Session pooler do Supabase, `?sslmode=require`), `SUPABASE_URL`, `VISITOR_TOKEN_SECRET`, `CORS_ORIGINS` e `FRONTEND_URL` (domínio público do serviço `web`) |
+| `web` | `frontend` | `VITE_API_URL` (`https://<domínio do api>/api/v1`), `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY` |
+
+- Gere um domínio público para cada serviço em *Settings → Networking*. As variáveis `VITE_*` entram no build: depois de alterá-las, faça redeploy do `web`.
+- O `api` roda `rake db:migrate` como pre-deploy e tem healthcheck em `/api/v1/health`.
+- Mantenha **1 réplica** no `api`: o rate limit é em memória por processo.
+
 ## Endpoints
 
 Todos os endpoints estão sob o prefixo `/api/v1`.
