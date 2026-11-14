@@ -29,7 +29,7 @@ export function ResultadosTab() {
         <div className="h-72 w-full">
           <ResponsiveContainer width="100%" height="100%">
             {/* margem esquerda: o primeiro rótulo inclinado (-30°) passa da borda e era cortado */}
-            <BarChart data={grafico.dados ?? []} margin={{ top: 8, right: 8, left: 24, bottom: 0 }}>
+            <BarChart data={grafico.dados ?? []} margin={{ top: 8, right: 8, left: 40, bottom: 0 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
               {/* shortcut: labels truncated for the axis only; the tooltip keeps the full name */}
               <XAxis
