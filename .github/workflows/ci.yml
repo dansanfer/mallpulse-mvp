@@ -75,7 +75,7 @@ jobs:
         if: matrix.service == 'backend'
         run: |
           docker run -d --name db --network host -e POSTGRES_PASSWORD=p postgres:16
-          for i in $(seq 1 30); do docker exec db pg_isready -U postgres docker run -d --name api -p 9292:9292 -e PORT=9292docker run -d --name api -p 9292:9292 -e PORT=9292 break; sleep 1; done
+          for i in $(seq 1 30); do docker exec db pg_isready -U postgres && break; sleep 1; done
           docker run -d --name api --network host -e PORT=9292 -e CORS_ORIGINS=https://example.com \
             -e FRONTEND_URL=https://example.com -e SUPABASE_URL=https://example.supabase.co \
             -e VISITOR_TOKEN_SECRET=ci -e DATABASE_URL=postgres://postgres:p@127.0.0.1:5432/postgres mallpulse-backend
