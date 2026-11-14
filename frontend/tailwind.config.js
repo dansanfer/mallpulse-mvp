@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#D87943",      // Laranja queimado
+        primary: "#B35A27",      // Laranja queimado (escurecido de #D87943 para contraste AA 4.76:1 com branco)
         secondary: "#527575",    // Verde petróleo
         tertiary: "#FBCC97",     // Areia
         background: "#FFFFFF",   // Branco

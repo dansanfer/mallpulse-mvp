@@ -52,11 +52,11 @@ export function ResultadoRecomendacao({ recomendacao, localSugerido }: Resultado
 
   return (
     <div className="bg-background rounded-xl border border-border shadow-sm overflow-hidden">
-      <div className="bg-tertiary/35 px-6 py-4 border-b border-border flex items-center justify-between">
+      <div className="bg-tertiary/35 px-6 py-4 border-b border-border flex flex-wrap items-center justify-between gap-2">
         <span className="text-xs font-bold uppercase tracking-wider text-foreground">
           Plano de Evento Recomendado
         </span>
-        <span className="px-3 py-1 rounded-full bg-secondary text-white text-xs font-bold">
+        <span className="px-3 py-1 rounded-full bg-secondary text-white text-xs font-bold whitespace-nowrap">
           {recomendacao.afinidade_pontos === null
             ? "Sem dados suficientes"
             : `${recomendacao.afinidade_pontos} pontos de afinidade`}
@@ -65,19 +65,19 @@ export function ResultadoRecomendacao({ recomendacao, localSugerido }: Resultado
 
       <div className="p-6 space-y-5">
         <div>
-          <h3 className="text-xl font-bold text-foreground">{recomendacao.titulo}</h3>
+          <h3 className="text-xl font-bold text-foreground break-words">{recomendacao.titulo}</h3>
           {recomendacao.justificativa && (
             <p className="text-sm text-gray-600 mt-1">{recomendacao.justificativa}</p>
           )}
         </div>
 
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {(Object.keys(ROTULOS_COMPONENTES) as (keyof ComponentesScore)[]).map((chave) => (
             <div key={chave} className="rounded-lg bg-muted border border-border p-2 text-center">
               <p className="text-[11px] text-gray-500">
                 {chave} • {ROTULOS_COMPONENTES[chave]}
               </p>
-              <p className="text-sm font-bold">
+              <p className="text-sm font-bold break-words">
                 {componentes[chave] === null ? "indisponível" : componentes[chave].toFixed(2)}
               </p>
             </div>
@@ -147,7 +147,7 @@ export function ResultadoRecomendacao({ recomendacao, localSugerido }: Resultado
               </p>
               <a
                 href={aprovacao.checkin_url}
-                className="inline-block text-xs font-semibold text-primary underline hover:opacity-80"
+                className="inline-flex items-center min-h-11 text-sm font-semibold text-primary underline hover:opacity-80"
               >
                 Abrir Portal do Visitante →
               </a>

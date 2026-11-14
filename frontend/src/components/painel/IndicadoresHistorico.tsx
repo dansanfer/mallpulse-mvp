@@ -18,7 +18,7 @@ export function IndicadoresHistorico({ eventos }: { eventos: EventoHistorico[] }
       {cartoes.map(({ titulo, valor, destaque }) => (
         <div key={titulo} className="bg-background p-5 rounded-xl border border-border shadow-sm">
           <p className="text-xs font-medium text-gray-500">{titulo}</p>
-          <p className={`text-2xl font-bold mt-2 ${destaque}`}>{valor}</p>
+          <p className={`text-2xl font-bold mt-2 tabular-nums ${destaque}`}>{valor}</p>
         </div>
       ))}
     </div>
