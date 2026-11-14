@@ -60,3 +60,28 @@ jobs:
       - run: npm ci
       - run: npm run lint
       - run: npm run build
+  docker:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service: [backend, frontend]
+    defaults:
+      run:
+        working-directory: ${{ matrix.service }}
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t mallpulse-${{ matrix.service }} .
+      - name: Smoke test backend image
+        if: matrix.service == 'backend'
+        run: |
+          docker run -d --name api -p 9292:9292 -e PORT=9292 -e CORS_ORIGINS=https://example.com \
+            -e FRONTEND_URL=https://example.com -e SUPABASE_URL=https://example.supabase.co \
+            -e VISITOR_TOKEN_SECRET=ci -e DATABASE_URL=postgres://u:p@127.0.0.1:1/x mallpulse-backend
+          for i in $(seq 1 30); do curl -fs localhost:9292/api/v1/health && exit 0; sleep 1; done
+          docker logs api; exit 1
+      - name: Smoke test frontend image
+        if: matrix.service == 'frontend'
+        run: |
+          docker run -d -p 8080:8080 mallpulse-frontend
+          for i in $(seq 1 15); do curl -fs localhost:8080/checkin/abc | grep -q '<div id="root">' && exit 0; sleep 1; done
+          exit 1

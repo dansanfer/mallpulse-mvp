@@ -15,12 +15,12 @@ gem 'rack'
 gem 'rack-attack'
 gem 'rack-cors'
 gem 'rackup'
+gem 'rake' # db:migrate runs as the Railway pre-deploy command
 gem 'sequel'
 gem 'zeitwerk'
 
 group :development, :test do
   gem 'dotenv'
-  gem 'rake'
 end
 
 group :development do
