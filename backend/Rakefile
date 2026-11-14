@@ -1,0 +1,36 @@
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'rspec/core/rake_task'
+require 'rubocop/rake_task'
+
+RSpec::Core::RakeTask.new(:spec)
+RuboCop::RakeTask.new(:rubocop)
+
+desc 'Load the application environment'
+task :environment do
+  require_relative 'config/environment'
+end
+
+desc 'List every API route'
+task routes: :environment do
+  MallPulse::API.routes.each do |route|
+    puts "#{route.request_method.ljust(8)} #{route.path}"
+  end
+end
+
+namespace :db do
+  desc 'Run migrations'
+  task :migrate do
+    require_relative 'config/environment'
+    Sequel.extension :migration
+    Sequel::Migrator.run(MallPulse::DB, File.expand_path('db/migrations', __dir__))
+  end
+
+  desc 'Seed simulated data'
+  task seed: :environment do
+    load File.expand_path('db/seeds.rb', __dir__)
+  end
+end
+
+task default: %i[rubocop spec]

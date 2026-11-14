@@ -1,0 +1,38 @@
+plugins:
+  - rubocop-rake
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  SuggestExtensions: false
+  TargetRubyVersion: 3.3
+  Exclude:
+    - vendor/**/*
+
+Layout/LineLength:
+  Max: 120
+
+Style/Documentation:
+  Enabled: false
+
+# Score.calcular takes the single-letter component keywords H/L/C/S from the scoring rule.
+Naming/MethodParameterName:
+  AllowedNames: [as, at, by, db, id, in, io, ip, of, on, os, pp, to, h, l, c, s]
+
+# Sequel virtual-row expressions: `.positive?` would evaluate in Ruby, not build SQL.
+Style/NumericPredicate:
+  Exclude:
+    - app/mall_pulse/services/historico_score.rb
+
+# Schema DSL and seeds are declarative; long blocks/param lists are expected.
+Metrics/BlockLength:
+  Exclude:
+    - db/migrations/*.rb
+
+# DB-heavy request/service specs need setup lines and several response assertions.
+RSpec/ExampleLength:
+  Max: 12
+RSpec/MultipleExpectations:
+  Max: 3
+RSpec/MultipleMemoizedHelpers:
+  Max: 7

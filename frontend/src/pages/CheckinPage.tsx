@@ -1,19 +1,23 @@
-import { useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useCallback, useState } from "react";
+import { useParams } from "react-router-dom";
 import {
   CheckCircle2,
   MapPin,
   Sparkles,
-  ArrowLeft,
   Loader2,
   CalendarDays,
   Clock,
 } from "lucide-react";
 import {
+  ApiError,
+  listarEventosPublicos,
+  mensagemErro,
+  obterEventoPublico,
   obterTokenVisitante,
   registrarCheckin,
   type CheckinResponse,
 } from "../services/api";
+import { useRequisicao } from "../hooks/useRequisicao";
 
 const EXPERIENCIAS = [
   "Shows & Música",
@@ -24,35 +28,22 @@ const EXPERIENCIAS = [
   "Eventos em Família",
 ];
 
-const PROXIMOS_EVENTOS = [
-  {
-    id: "evt-2",
-    titulo: "Oficina de Robótica Kids",
-    categoria: "Família & Educação",
-    data: "Amanhã • 15h00",
-    local: "Praça Central",
-    corTag: "bg-secondary/15 text-secondary",
-  },
-  {
-    id: "evt-3",
-    titulo: "Feira de Cafés Especiais",
-    categoria: "Gastronomia",
-    data: "Domingo • 10h às 18h",
-    local: "Boulevard Gourmet",
-    corTag: "bg-tertiary/60 text-foreground",
-  },
-  {
-    id: "evt-4",
-    titulo: "Sunset Acoustic & Vinho",
-    categoria: "Música ao Vivo",
-    data: "Sexta • 19h30",
-    local: "Terraço L3",
-    corTag: "bg-primary/15 text-primary",
-  },
-];
+const formatarInicio = (inicio: string) =>
+  new Date(inicio).toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
 
 export function CheckinPage() {
-  const { eventoId } = useParams();
+  const { eventoId = "" } = useParams();
+  const buscarEvento = useCallback(
+    () =>
+      obterEventoPublico(eventoId).catch((e) => {
+        throw e instanceof ApiError && e.status === 404 ? new Error("Evento indisponível") : e;
+      }),
+    [eventoId]
+  );
+  const evento = useRequisicao(buscarEvento);
+  const agenda = useRequisicao(listarEventosPublicos);
+  const proximosEventos = agenda.dados?.filter((ev) => ev.id !== eventoId) ?? [];
+  const [erroCheckin, setErroCheckin] = useState<string>();
   const [interesses, setInteresses] = useState<string[]>([
     "Shows & Música",
     "Gastronomia & Grill",
@@ -68,14 +59,12 @@ export function CheckinPage() {
 
   const handleConfirmar = async () => {
     setCarregando(true);
+    setErroCheckin(undefined);
     try {
-      const token = obterTokenVisitante();
-      const res = await registrarCheckin({
-        evento_id: eventoId || "evento-01",
-        visitante_token: token,
-        interesses,
-      });
-      setResposta(res);
+      const token = await obterTokenVisitante();
+      setResposta(await registrarCheckin(eventoId, token, interesses));
+    } catch (e) {
+      setErroCheckin(mensagemErro(e));
     } finally {
       setCarregando(false);
     }
@@ -102,23 +91,27 @@ export function CheckinPage() {
 
         <div className="p-5 space-y-5">
           {/* Card do Evento Atual */}
-          <div className="rounded-2xl overflow-hidden border border-border">
-            <div className="bg-gradient-to-r from-primary to-secondary p-5 text-white">
-              <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/20 text-[11px] font-medium mb-2">
-                Acontecendo Agora • Música & Grill
-              </span>
-              <h1 className="text-xl font-bold leading-snug">
-                Festival Rock Clássico & Grill
-              </h1>
-              <p className="text-xs text-white/90 flex items-center gap-1 mt-1.5">
-                <MapPin className="w-3.5 h-3.5" />
-                Corredor L2 • Entrada Gratuita
-              </p>
+          {evento.dados ? (
+            <div className="rounded-2xl overflow-hidden border border-border">
+              <div className="bg-gradient-to-r from-primary to-secondary p-5 text-white">
+                <span className="inline-block px-2.5 py-0.5 rounded-full bg-white/20 text-[11px] font-medium mb-2">
+                  {evento.dados.categoria} • {formatarInicio(evento.dados.inicio)}
+                </span>
+                <h1 className="text-xl font-bold leading-snug">{evento.dados.titulo}</h1>
+                <p className="text-xs text-white/90 flex items-center gap-1 mt-1.5">
+                  <MapPin className="w-3.5 h-3.5" />
+                  {evento.dados.local} • Entrada Gratuita
+                </p>
+              </div>
             </div>
-          </div>
+          ) : (
+            <p role="status" className="p-4 rounded-2xl bg-muted text-center text-sm text-gray-600">
+              {evento.carregando ? "Carregando evento..." : evento.erro}
+            </p>
+          )}
 
           {/* Ação Principal (1 toque, sem cupom) */}
-          {!resposta ? (
+          {!evento.dados ? null : !resposta ? (
             <button
               onClick={handleConfirmar}
               disabled={carregando}
@@ -153,6 +146,12 @@ export function CheckinPage() {
             </div>
           )}
 
+          {erroCheckin && (
+            <p role="alert" className="text-xs text-center text-destructive">
+              {erroCheckin}
+            </p>
+          )}
+
           {/* Preferências Rápidas */}
           <div className="pt-3 border-t border-border">
             <p className="text-xs font-semibold text-foreground mb-2.5 flex items-center gap-1.5">
@@ -166,6 +165,7 @@ export function CheckinPage() {
                   <button
                     type="button"
                     key={exp}
+                    aria-pressed={ativo}
                     onClick={() => toggleInteresse(exp)}
                     className={`px-3 py-1.5 rounded-full text-xs font-medium transition ${
                       ativo
@@ -191,14 +191,17 @@ export function CheckinPage() {
             </div>
 
             <div className="space-y-2">
-              {PROXIMOS_EVENTOS.map((ev) => (
+              {proximosEventos.length === 0 && !agenda.carregando && (
+                <p className="text-[11px] text-gray-400">Nenhum outro evento agendado.</p>
+              )}
+              {proximosEventos.map((ev) => (
                 <div
                   key={ev.id}
                   className="p-3 rounded-xl bg-muted/70 border border-border flex items-start justify-between gap-2"
                 >
                   <div>
                     <span
-                      className={`inline-block px-2 py-0.5 rounded-md text-[10px] font-semibold mb-1 ${ev.corTag}`}
+                      className="inline-block px-2 py-0.5 rounded-md text-[10px] font-semibold mb-1 bg-primary/15 text-primary"
                     >
                       {ev.categoria}
                     </span>
@@ -207,7 +210,7 @@ export function CheckinPage() {
                     </h3>
                     <div className="flex items-center gap-2.5 text-[11px] text-gray-500 mt-1">
                       <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> {ev.data}
+                        <Clock className="w-3 h-3" /> {formatarInicio(ev.inicio)}
                       </span>
                       <span>• {ev.local}</span>
                     </div>
@@ -222,15 +225,6 @@ export function CheckinPage() {
           </p>
         </div>
       </div>
-
-      {/* Link discreto para voltar ao painel do gestor durante a demo */}
-      <Link
-        to="/"
-        className="mt-4 text-xs text-gray-500 hover:text-foreground flex items-center gap-1"
-      >
-        <ArrowLeft className="w-3.5 h-3.5" />
-        Voltar para o Painel do Gestor
-      </Link>
     </div>
   );
 }
